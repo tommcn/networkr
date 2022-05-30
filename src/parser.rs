@@ -40,12 +40,12 @@ pub fn parse_graph(filename: String) -> Result<Graph> {
 
     let _num_vertices = lines[4].parse::<u64>().unwrap();
 
-    let _enable_vert_name = !(lines[5].parse::<u8>().unwrap() == 0);
+    let enable_vert_name = !(lines[5].parse::<u8>().unwrap() == 0);
 
     let mut nodes: Vec<String> = Vec::new();
 
     for i in 0..num_nodes {
-        nodes.push(lines[(5 + i) as usize].to_string())
+        nodes.push(lines[(6 + i) as usize].to_string())
     }
 
     let file_weights = lines[(6 + num_nodes) as usize..(6 + num_nodes * 2) as usize].to_vec();
@@ -69,32 +69,33 @@ pub fn parse_graph(filename: String) -> Result<Graph> {
         }
     }
 
-    let file_vname = lines[(6 + num_nodes * 3) as usize..(6 + (4 * num_nodes)) as usize].to_vec();
     let mut vertex_names = vec![vec![String::new(); num_nodes as usize]; num_nodes as usize];
 
-    for (i, node) in file_vname.iter().enumerate() {
-        let split = node.split(' ');
-        for (j, w) in split.enumerate() {
-            vertex_names[i][j] = w.to_string();
+    if enable_vert_name {
+        let file_vname =
+            lines[(6 + num_nodes * 3) as usize..(6 + (4 * num_nodes)) as usize].to_vec();
+
+        for (i, node) in file_vname.iter().enumerate() {
+            let split = node.split(' ');
+            for (j, w) in split.enumerate() {
+                vertex_names[i][j] = w.to_string();
+            }
         }
     }
 
-    let default_start = lines[(6 + 4 * num_nodes) as usize]
-        .split(' ')
-        .collect::<Vec<&str>>()[0]
-        .to_string();
-    let default_end = lines[(6 + 4 * num_nodes) as usize]
-        .split(' ')
-        .collect::<Vec<&str>>()[1]
-        .to_string();
+    let offset = 6 + (if enable_vert_name { 4 } else { 3 }) * num_nodes;
 
-    let recommended_algo = lines[(6 + 4 * num_nodes + 1) as usize].to_string();
-    let description = lines[(6 + 4 * num_nodes + 2) as usize].to_string();
+    let default_start = lines[(offset) as usize].split(' ').collect::<Vec<&str>>()[0].to_string();
+    let default_end = lines[(offset) as usize].split(' ').collect::<Vec<&str>>()[1].to_string();
+
+    let recommended_algo = lines[(offset + 1) as usize].to_string();
+    let description = lines[(offset + 2) as usize].to_string();
 
     let graph = Graph {
         version,
         graph_type,
         flags,
+        nodes,
         weights,
         connectivity,
         vertex_names,
