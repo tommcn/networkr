@@ -105,7 +105,5 @@ pub fn parse_graph(filename: String) -> Result<Graph> {
         description,
     };
 
-    println!("{:?}", graph);
-
     return Ok(graph);
 }
