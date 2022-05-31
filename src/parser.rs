@@ -54,7 +54,7 @@ pub fn parse_graph(filename: String) -> Result<Graph> {
     for (i, node) in file_weights.iter().enumerate() {
         let split = node.split(' ');
         for (j, w) in split.enumerate() {
-            weights[i][j] = w.parse::<u32>().unwrap()
+            weights[i][j] = w.parse::<i32>().unwrap()
         }
     }
 

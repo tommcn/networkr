@@ -20,7 +20,7 @@ pub struct Graph {
     /*
      The weights for each of the vertices as an u32, as a NxN matrix
     */
-    pub weights: Vec<Vec<u32>>,
+    pub weights: Vec<Vec<i32>>,
     /*
      Whether or not both nodes are connected as a NxN matrix
     */
@@ -46,4 +46,13 @@ pub struct Graph {
      Description of the map
     */
     pub description: String,
+}
+
+#[derive(Debug)]
+pub struct Vertex {
+    pub from: String,
+    pub to: String,
+    pub weight: i32,
+    pub directed: bool,
+    pub name: Option<String>,
 }

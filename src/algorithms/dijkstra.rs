@@ -18,7 +18,7 @@ pub fn dijkstra(graph: Graph, from: String, to: String) -> u64 {
      * 2: Assign to all nodes a tentative distance
      * Set the initial node as the current
      */
-    let mut distances: Vec<u32> = vec![(f64::INFINITY) as u32; graph.nodes.len()];
+    let mut distances: Vec<i32> = vec![(f64::INFINITY) as i32; graph.nodes.len()];
     distances[num_from] = 0;
 
     while unvisited.contains(&num_to) {
@@ -54,7 +54,7 @@ pub fn dijkstra(graph: Graph, from: String, to: String) -> u64 {
 /**
  * Get smallest distance from a list of distance
  */
-fn get_smallest_dist(unvisited: &HashSet<usize>, distances: &Vec<u32>, current: usize) -> usize {
+fn get_smallest_dist(unvisited: &HashSet<usize>, distances: &Vec<i32>, current: usize) -> usize {
     let mut ret = current;
     unvisited.iter().for_each(|&f| {
         if distances[f] < distances[ret] {
@@ -88,7 +88,7 @@ mod tests {
         unvisited.insert(2);
         unvisited.insert(4);
         unvisited.insert(5);
-        let distances = vec![0, 20, 10, 30, 40, (f64::INFINITY as u32)];
+        let distances = vec![0, 20, 10, 30, 40, (f64::INFINITY as i32)];
         let current = 5;
         assert_eq!(get_smallest_dist(&unvisited, &distances, current), 2);
     }
