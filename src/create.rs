@@ -1,7 +1,7 @@
-use crate::graph::{Graph, Vertex};
+use crate::graph::{Edge, Graph};
 use std::collections::HashMap;
 
-pub fn create_graph(nodes: &Vec<String>, vertices: Vec<Vertex>) -> Graph {
+pub fn create_graph(nodes: &Vec<String>, vertices: Vec<Edge>) -> Graph {
     let version = String::from("v3");
     let graph_type = String::from("MATRIX");
     let flags = vec![String::from("F"), String::from("A")];
@@ -37,7 +37,8 @@ pub fn create_graph(nodes: &Vec<String>, vertices: Vec<Vertex>) -> Graph {
         nodes: nodes.to_vec(),
         weights,
         connectivity,
-        vertex_names,
+        edges: vertices,
+        edge_names: vertex_names,
         default_start: nodes.first().unwrap().to_owned(),
         default_end: nodes.last().unwrap().to_owned(),
         recommended_algo: String::new(),

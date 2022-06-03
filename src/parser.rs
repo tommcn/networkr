@@ -1,7 +1,7 @@
 use core::fmt;
 use std::fs;
 
-use crate::graph::Graph;
+use crate::graph::{Edge, Graph};
 
 type Result<T> = std::result::Result<T, InvalidGraph>;
 
@@ -38,9 +38,9 @@ pub fn parse_graph(filename: String) -> Result<Graph> {
 
     let num_nodes = lines[3].parse::<u64>().unwrap();
 
-    let _num_vertices = lines[4].parse::<u64>().unwrap();
+    let _num_edges = lines[4].parse::<u64>().unwrap();
 
-    let enable_vert_name = !(lines[5].parse::<u8>().unwrap() == 0);
+    let enable_edge_name = !(lines[5].parse::<u8>().unwrap() == 0);
 
     let mut nodes: Vec<String> = Vec::new();
 
@@ -69,21 +69,42 @@ pub fn parse_graph(filename: String) -> Result<Graph> {
         }
     }
 
-    let mut vertex_names = vec![vec![String::new(); num_nodes as usize]; num_nodes as usize];
+    let mut edge_names = vec![vec![String::new(); num_nodes as usize]; num_nodes as usize];
 
-    if enable_vert_name {
+    if enable_edge_name {
         let file_vname =
             lines[(6 + num_nodes * 3) as usize..(6 + (4 * num_nodes)) as usize].to_vec();
 
         for (i, node) in file_vname.iter().enumerate() {
             let split = node.split(' ');
             for (j, w) in split.enumerate() {
-                vertex_names[i][j] = w.to_string();
+                edge_names[i][j] = w.to_string();
+            }
+        }
+    }
+    let mut edges: Vec<Edge> = vec![];
+    for y in 0..connectivity.len() {
+        for x in 0..connectivity[y].len() {
+            if connectivity[y][x] {
+                let name = if enable_edge_name {
+                    Some(edge_names[y][x].to_owned())
+                } else {
+                    Some(format!("{} -> {}", nodes[y], nodes[x]))
+                };
+                if enable_edge_name {
+                    edges.push(Edge {
+                        from: nodes[y].to_owned(),
+                        to: nodes[x].to_owned(),
+                        weight: weights[x][y],
+                        directed: true,
+                        name,
+                    })
+                }
             }
         }
     }
 
-    let offset = 6 + (if enable_vert_name { 4 } else { 3 }) * num_nodes;
+    let offset = 6 + (if enable_edge_name { 4 } else { 3 }) * num_nodes;
 
     let default_start = lines[(offset) as usize].split(' ').collect::<Vec<&str>>()[0].to_string();
     let default_end = lines[(offset) as usize].split(' ').collect::<Vec<&str>>()[1].to_string();
@@ -98,7 +119,8 @@ pub fn parse_graph(filename: String) -> Result<Graph> {
         nodes,
         weights,
         connectivity,
-        vertex_names,
+        edges,
+        edge_names,
         default_start,
         default_end,
         recommended_algo,

@@ -1,4 +1,4 @@
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Graph {
     /**
      The version of the graph
@@ -22,13 +22,17 @@ pub struct Graph {
     */
     pub weights: Vec<Vec<i32>>,
     /*
-     Whether or not both nodes are connected as a NxN matrix
+    Whether or not both nodes are connected as a NxN matrix
     */
     pub connectivity: Vec<Vec<bool>>,
     /*
+     Vertices
+    */
+    pub edges: Vec<Edge>,
+    /*
      The name of the vertices
     */
-    pub vertex_names: Vec<Vec<String>>,
+    pub edge_names: Vec<Vec<String>>,
 
     /*
      Default start node for the algorithms
@@ -48,8 +52,8 @@ pub struct Graph {
     pub description: String,
 }
 
-#[derive(Debug)]
-pub struct Vertex {
+#[derive(Debug, Clone)]
+pub struct Edge {
     pub from: String,
     pub to: String,
     pub weight: i32,
